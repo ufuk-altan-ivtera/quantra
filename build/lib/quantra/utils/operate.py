@@ -116,12 +116,21 @@ class Assemble(Generate):
         
 class Transform():
 
-    def __init__(self):
-        self.eda_scaler = MinMaxScaler(feature_range=(1,100))
-    
-    def transform_to_scaled_df(self, df):
-        
-        scaled_array = self.eda_scaler.fit_transform(df)
-        scaled_df = pd.DataFrame(scaled_array, columns= df.columns, index = df.index)
-        return scaled_df
+    def transform_feature(self, data, feature_range=(0, 1)):
+        """
+        Standardize a Pandas Series or Python list using MinMaxScaler.
 
+        Parameters:
+        data (pd.Series or list): The data to be standardized.
+        feature_range (tuple): Desired range of transformed data (default is (0, 1)).
+
+        Returns:
+        pd.Series: A standardized Pandas Series.
+        """
+        if isinstance(data, list):
+            data = pd.Series(data)
+        
+        scaler = MinMaxScaler(feature_range=feature_range)
+        array_scaled = scaler.fit_transform(data.values.reshape(-1, 1)).flatten()
+        
+        return array_scaled
