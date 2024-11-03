@@ -23,7 +23,7 @@ commands_list = [
                 'pip uninstall quantra -y && ',
                 
                 # Reinstall Library
-                "pip install 'git+https://ufuk.altan.ivtera@gitlab.com/library3921439/quantra.git' && "
+                "pip install 'git+https://github.com/ufuk-altan-ivtera/quantra.git' && "
                 
                 ]
 
