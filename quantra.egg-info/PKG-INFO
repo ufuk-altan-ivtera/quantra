@@ -9,3 +9,4 @@ Requires-Dist: ta==0.10.2
 Requires-Dist: statsmodels==0.13.5
 Requires-Dist: scikit-learn==1.2.2
 Requires-Dist: imbalanced-learn==0.11.0
+Requires-Dist: groq==0.5.0
