@@ -267,11 +267,7 @@ class Indicator(Momentum, Trend, Volatility):
 
         return df
     
-    def __str__(self):
-        return "Assemble all indicators into a single class "
-        
-
-
+    
     
     
 
