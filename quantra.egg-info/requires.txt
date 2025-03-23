@@ -1,9 +1,10 @@
-yfinance==0.2.26
+yfinance
 pandas<2.1,>=1.5.3
 numpy<1.24.0,>=1.23.5
+pyarrow==19.0.1
 ta==0.10.2
-statsmodels==0.13.5
-scikit-learn==1.2.2
-imbalanced-learn==0.11.0
-groq==0.5.0
+statsmodels
+scikit-learn
+imbalanced-learn
+groq
 aiohttp
