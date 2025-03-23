@@ -1,158 +1,265 @@
 import os
-from datetime import datetime
+from datetime import datetime, date
 import pandas as pd
-from datetime import date
 
 class Check:
+    async def check_if_value_is_not_none(self, value):
+        """
+        Check if a value is not None and can be converted to float.
 
-    def check_if_value_is_not_none(self, value):
-        
+        Parameters
+        ----------
+        value : any
+            The value to be checked.
+
+        Returns
+        -------
+        bool
+            True if value is convertible to float, False otherwise.
+        """
         try:
-            value = float(value)
-            is_not_null = True
+            float(value)
+            return True
         except:
-            is_not_null = False
+            return False
 
-        return is_not_null
-    
-    def check_if_value_is_not_zero(self, value):
-        
-        if value != 0:
-            value_is_not_zero = True
-            
-        else:
-            value_is_not_zero = False
-            
-        return value_is_not_zero 
-    
-    def check_if_element_exists(self, element, data): # -
-        
-        if element in data:
-            element_exists = True
-            
-        else:
-            element_exists = False
-            
-        return element_exists
-    
-    def check_if_folder_exist(self, folder_path):
+    async def check_if_value_is_not_zero(self, value):
         """
-        Check if a folder exists or not
-        
+        Check if a value is not zero.
+
         Parameters
         ----------
-        folder_path: str
-            Folder location to save statements
-        
+        value : numeric
+            The value to be checked.
+
+        Returns
+        -------
+        bool
+            True if value is not zero, False otherwise.
         """
-        folder_exists = os.path.exists(folder_path)
-        return folder_exists
-    
-    def check_if_data_is_string(self, data):
+        return value != 0
+
+    async def check_if_element_exists(self, element, data):
         """
-        Check if data is string
-        
+        Check if an element exists in a data structure (list, dict, etc.).
+
         Parameters
         ----------
-        data: datetime, str, etc.
-            Data to be checked
+        element : any
+            The element to search for.
+        data : iterable
+            The data structure to search in.
+
+        Returns
+        -------
+        bool
+            True if element is in data, False otherwise.
         """
-        type_ = type(data)
-        is_string = type_ == str
-        return is_string
+        return element in data
 
-    def check_if_index_is_not_out_of_range(self, index, data):
+    async def check_if_folder_exist(self, folder_path):
+        """
+        Check if a folder exists.
 
-        if index < len(data):
-            index_is_not_out_of_range = True
-        else:
-            index_is_not_out_of_range = False
+        Parameters
+        ----------
+        folder_path : str
+            Path to the folder.
 
-        return index_is_not_out_of_range 
+        Returns
+        -------
+        bool
+            True if folder exists, False otherwise.
+        """
+        return os.path.exists(folder_path)
 
-    def check_if_value_is_higher(self, value1, value2):
+    async def check_if_data_is_string(self, data):
+        """
+        Check if the data is of type string.
 
-        if value1 > value2:
-            value_is_higher = True
-        else:
-            value_is_higher = False
+        Parameters
+        ----------
+        data : any
+            The data to check.
 
-        return value_is_higher 
+        Returns
+        -------
+        bool
+            True if data is string, False otherwise.
+        """
+        return isinstance(data, str)
 
-    def check_if_value_is_numerical(self, value):
-        
-        try: 
-            value_ = float(value)
-            value_is_numerical = True
-            
-        except:
-            value_is_numerical = False
+    async def check_if_index_is_not_out_of_range(self, index, data):
+        """
+        Check if index is within the bounds of a list or similar structure.
 
-        return value_is_numerical
-    
-    def check_if_value_is_iterable(self, value):
-        
+        Parameters
+        ----------
+        index : int
+        data : list or similar
+
+        Returns
+        -------
+        bool
+            True if index is in range, False otherwise.
+        """
+        return index < len(data)
+
+    async def check_if_value_is_higher(self, value1, value2):
+        """
+        Check if one value is higher than another.
+
+        Parameters
+        ----------
+        value1 : numeric
+        value2 : numeric
+
+        Returns
+        -------
+        bool
+            True if value1 > value2, False otherwise.
+        """
+        return value1 > value2
+
+    async def check_if_value_is_numerical(self, value):
+        """
+        Check if a value is numerical (can be converted to float).
+
+        Parameters
+        ----------
+        value : any
+
+        Returns
+        -------
+        bool
+            True if value is numerical, False otherwise.
+        """
         try:
-            length = len(value)
-            value_is_iterable = True
-            
+            float(value)
+            return True
         except:
-            value_is_iterable = False
-            
-        return value_is_iterable 
-    
-    def check_if_data_does_not_contain_negative_value(self, data):
-    
-        values_are_positive = [value >= 0 for value in data]
-        
-        data_does_not_contain_negative_value = False not in values_are_positive
-        return data_does_not_contain_negative_value
-    
-class Format():
-    
-    def format_datetime_to_string(self, datetime_object):
+            return False
+
+    async def check_if_value_is_iterable(self, value):
         """
-        Change datetime into string format
+        Check if a value is iterable.
 
         Parameters
         ----------
-        datetime_object: datetime
+        value : any
+
+        Returns
+        -------
+        bool
+            True if value is iterable, False otherwise.
         """
-        date_string = datetime_object.strftime('%Y-%m-%d')
-        return date_string
-    
-    def format_string_to_datetime(self, string):
+        try:
+            len(value)
+            return True
+        except:
+            return False
 
-        datetime_object = datetime.strptime(string, '%Y-%m-%d')
-        return datetime_object
-    
-    def format_dict_to_df(self, data, columns):
-        
-        df = pd.DataFrame.from_dict(data = data, columns = columns, orient = 'index')
-        return df
-    
-    def format_timezone_to_timestamp(self, timezone):
-    
-        timestamp = timezone.tz_localize(None)
-        return timestamp    
-    
-    def format_tz_timestamp2utc(self, tz):
+    async def check_if_data_does_not_contain_negative_value(self, data):
+        """
+        Check if all values in the iterable are non-negative.
 
+        Parameters
+        ----------
+        data : iterable of numeric
+
+        Returns
+        -------
+        bool
+            True if all values are >= 0, False if any are negative.
+        """
+        return all(value >= 0 for value in data)
+
+
+class Format:
+    async def format_datetime_to_string(self, datetime_object):
+        """
+        Convert a datetime object to string format 'YYYY-MM-DD'.
+
+        Parameters
+        ----------
+        datetime_object : datetime
+
+        Returns
+        -------
+        str
+            String representation of the date.
+        """
+        return datetime_object.strftime('%Y-%m-%d')
+
+    async def format_string_to_datetime(self, string):
+        """
+        Convert a string in 'YYYY-MM-DD' format to a datetime object.
+
+        Parameters
+        ----------
+        string : str
+
+        Returns
+        -------
+        datetime
+        """
+        return datetime.strptime(string, '%Y-%m-%d')
+
+    async def format_dict_to_df(self, data, columns):
+        """
+        Convert a dictionary to a pandas DataFrame.
+
+        Parameters
+        ----------
+        data : dict
+        columns : list of str
+
+        Returns
+        -------
+        pd.DataFrame
+        """
+        return pd.DataFrame.from_dict(data=data, columns=columns, orient='index')
+
+    async def format_timezone_to_timestamp(self, timezone):
+        """
+        Remove timezone info from a datetime object.
+
+        Parameters
+        ----------
+        timezone : pd.Timestamp
+
+        Returns
+        -------
+        pd.Timestamp
+        """
+        return timezone.tz_localize(None)
+
+    async def format_tz_timestamp2utc(self, tz):
+        """
+        Convert timezone-aware timestamp to UTC and strip tz info.
+
+        Parameters
+        ----------
+        tz : pd.Timestamp
+
+        Returns
+        -------
+        pd.Timestamp
+        """
         utc_timestamp = tz.tz_convert('UTC')
         timestamp = utc_timestamp.tz_localize(None)
-        timestamp_date = pd.to_datetime(timestamp.date)
-        return timestamp_date
-    
-    def format_tz_date_object(self, tz):
-        year = tz.year
-        month = tz.month
-        day = tz.day
+        return pd.to_datetime(timestamp.date())
 
-        datey = date(year, month, day)
-        return datey
+    async def format_tz_date_object(self, tz):
+        """
+        Extract date from a datetime object and return a date object.
 
+        Parameters
+        ----------
+        tz : datetime or pd.Timestamp
 
-
-
-
-
+        Returns
+        -------
+        date
+        """
+        return date(tz.year, tz.month, tz.day)
