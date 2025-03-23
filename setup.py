@@ -13,7 +13,8 @@ setup(
         'statsmodels==0.13.5',
         'scikit-learn==1.2.2',
         'imbalanced-learn==0.11.0',
-        'groq==0.5.0'
+        'groq==0.5.0',
+        'aiohttp'
     ],
     setup_requires=['setuptools>=49.6.0'],
 )
