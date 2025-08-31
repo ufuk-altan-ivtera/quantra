@@ -7,7 +7,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 class Calculate():
 
-    def calculate_percentage_difference(self, first_value, next_value):
+    def calculate_percentage_difference(self, first_value, next_value): # 
         
         if first_value == 0:
             raise ValueError("The first value cannot be zero to calculate percentage difference.")
@@ -16,7 +16,7 @@ class Calculate():
         
         return percentage_difference
     
-    def calculate_results(self, df_filtered6, budget = 1000):
+    def calculate_results(self, df_filtered6, budget = 1000): # pulse
 
         win, loss = 0,0
         budget_flow_list = []
@@ -44,7 +44,7 @@ class Calculate():
 
         return budget, win, loss, df_filtered6
     
-    def calculate_percentage_rate(self, array, throwback_period):
+    def calculate_percentage_rate(self, array, throwback_period): # pulse
 
         true_count = np.count_nonzero(array > 0)
         true_rate = true_count / throwback_period * 100

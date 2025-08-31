@@ -3,8 +3,8 @@ Name: quantra
 Version: 1.1.2
 Author: Ufuk Altan
 Requires-Dist: yfinance
-Requires-Dist: pandas<2.1,>=1.5.3
-Requires-Dist: numpy<1.24.0,>=1.23.5
+Requires-Dist: pandas
+Requires-Dist: numpy
 Requires-Dist: pyarrow==19.0.1
 Requires-Dist: ta==0.10.2
 Requires-Dist: statsmodels

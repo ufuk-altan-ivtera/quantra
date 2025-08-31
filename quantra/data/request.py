@@ -6,11 +6,13 @@ import aiohttp
 from datetime import date
 today_as_string = date.today()
 
+VERIFY_SSL = False # !!!!
+
 class Client:
 
     async def get(self, url, query, headers):
         async with aiohttp.ClientSession(
-            connector=aiohttp.TCPConnector(verify_ssl=False)
+            connector=aiohttp.TCPConnector(verify_ssl=VERIFY_SSL)
         ) as client:
             async with client.get(url, params=query, headers=headers) as response:
                 if response.status == 204:
@@ -23,7 +25,7 @@ class Client:
 
     async def post(self, url, query, headers):
         async with aiohttp.ClientSession(
-            connector=aiohttp.TCPConnector(verify_ssl=False)
+            connector=aiohttp.TCPConnector(verify_ssl=VERIFY_SSL)
         ) as client:
             async with client.post(url, json=query, headers=headers) as response:
                 if response.status == 204:
@@ -36,7 +38,7 @@ class Client:
 
     async def put(self, url, query, headers):
         async with aiohttp.ClientSession(
-            connector=aiohttp.TCPConnector(verify_ssl=False)
+            connector=aiohttp.TCPConnector(verify_ssl=VERIFY_SSL)
         ) as client:
             async with client.put(url, json=query, headers=headers) as response:
                 if response.status == 204:
@@ -49,7 +51,7 @@ class Client:
 
     async def delete(self, url, query, headers):
         async with aiohttp.ClientSession(
-            connector=aiohttp.TCPConnector(verify_ssl=False)
+            connector=aiohttp.TCPConnector(verify_ssl=VERIFY_SSL)
         ) as client:
             async with client.delete(url, json=query, headers=headers) as response:
                 if response.status == 204:
@@ -60,28 +62,26 @@ class Client:
                     response_text = await response.text()
                     raise Exception(f"Failed DELETE request: {response.status}, {response_text}")
 
-class Request():
+class Yahoo():
      
-    def __init__(self, ticker):
-        self.stock = yf.Ticker(ticker)
+    async def financial_statements(self, ticker, freq='yearly'):
         
-
-    def request_financial_statements(self, freq='yearly'):
-
-        balance_sheet = self.stock.get_balance_sheet(freq = freq)
-        income_statement = self.stock.get_income_stmt(freq = freq)
-        cash_flow = self.stock.get_cash_flow(freq = freq)
+        stock = yf.Ticker(ticker)
+        balance_sheet = stock.get_balance_sheet(freq = freq)
+        income_statement = stock.get_income_stmt(freq = freq)
+        cash_flow = stock.get_cash_flow(freq = freq)
         
         financial_statements = pd.concat([balance_sheet, income_statement, cash_flow])
-        
         return financial_statements
     
-    def request_info(self):
+    async def info(self, ticker):
         
-        info = self.stock.get_info()
+        stock = yf.Ticker(ticker)
+        info = stock.get_info()
         return info
     
-    def request_price_df(self, start, end):
+    async def price_df(self, ticker, start, end):
         
-        price_df = self.stock.history(start=start, end=end)
+        stock = yf.Ticker(ticker)
+        price_df = stock.history(start=start, end=end)
         return price_df
