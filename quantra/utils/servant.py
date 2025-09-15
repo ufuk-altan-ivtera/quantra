@@ -191,19 +191,11 @@ class Format:
         """
         return datetime_object.strftime('%Y-%m-%d')
 
-    async def format_string_to_datetime(self, string):
+    async def format_string_to_datetime(self, string: str) -> datetime:
         """
-        Convert a string in 'YYYY-MM-DD' format to a datetime object.
-
-        Parameters
-        ----------
-        string : str
-
-        Returns
-        -------
-        datetime
+        Convert a string in 'YYYY-MM-DD HH:MM:SS' format to a datetime object.
         """
-        return datetime.strptime(string, '%Y-%m-%d')
+        return datetime.strptime(string, '%Y-%m-%d %H:%M:%S')
 
     async def format_dict_to_df(self, data, columns):
         """
