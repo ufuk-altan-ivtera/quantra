@@ -34,7 +34,7 @@ class Momentum():
         """
         Returns a pd.Series with the relative strength index.
         """
-        close_delta = df['Close'].diff()
+        close_delta = df['close'].diff()
 
         # Make two series: one for lower closes and one for higher closes
         up = close_delta.clip(lower=0)
@@ -62,11 +62,11 @@ class Momentum():
             second_ema = first_ema.ewm(span=length, adjust=False).mean()
             return second_ema
         
-        highest_high = df['High'].rolling(window=k_length).max()
-        lowest_low = df['Low'].rolling(window=k_length).min()
+        highest_high = df['high'].rolling(window=k_length).max()
+        lowest_low = df['low'].rolling(window=k_length).min()
 
         highest_lowest_range = highest_high - lowest_low
-        relative_range = df['Close'] - (highest_high + lowest_low) / 2
+        relative_range = df['close'] - (highest_high + lowest_low) / 2
 
         # Calculating EMA of EMA
         double_ema_relative_range = second_ema(relative_range, d_length)
@@ -91,9 +91,9 @@ class Volatility():
         alpha = 1/period
 
         # TR
-        df['H-L'] = df['High'] - df['Low']
-        df['H-C'] = np.abs(df['High'] - df['Close'].shift(1))
-        df['L-C'] = np.abs(df['Low'] - df['Close'].shift(1))
+        df['H-L'] = df['high'] - df['low']
+        df['H-C'] = np.abs(df['high'] - df['close'].shift(1))
+        df['L-C'] = np.abs(df['low'] - df['close'].shift(1))
         df['TR'] = df[['H-L', 'H-C', 'L-C']].max(axis=1)
         del df['H-L'], df['H-C'], df['L-C']
 
@@ -101,8 +101,8 @@ class Volatility():
         df['ATR'] = df['TR'].ewm(alpha=alpha, adjust=False).mean()
 
         # +-DX
-        df['H-pH'] = df['High'] - df['High'].shift(1)
-        df['pL-L'] = df['Low'].shift(1) - df['Low']
+        df['H-pH'] = df['high'] - df['high'].shift(1)
+        df['pL-L'] = df['low'].shift(1) - df['low']
         df['+DX'] = np.where(
             (df['H-pH'] > df['pL-L']) & (df['H-pH']>0),
             df['H-pH'],
@@ -130,12 +130,12 @@ class Volatility():
         return adx
 
     def standard_deviation(self, data, period = 9):
-        std = data['Close'].rolling(window = period).std() 
+        std = data['close'].rolling(window = period).std() 
         return std
     
     def bollinger_bands(self, data, period = 20):
 
-        bb = BollingerBands(data['Close'], period, 2)
+        bb = BollingerBands(data['close'], period, 2)
         bbl = bb.bollinger_lband()
         bbh = bb.bollinger_hband()
 
@@ -148,7 +148,7 @@ class Volatility():
         for period in period_list:
 
             if indicator == 'STD':
-                periods['period' + str(period)] = self.standard_deviation(data, 'Close', period=period)
+                periods['period' + str(period)] = self.standard_deviation(data, 'close', period=period)
 
             elif indicator == 'ADX':
 
@@ -160,12 +160,12 @@ class Trend():
     
     def moving_average(self, data, window = 13):
 
-        ma = data['Close'].rolling(window=window).mean()
+        ma = data['close'].rolling(window=window).mean()
         return ma
     
     def triple_ema(self, data, span = 13):
 
-        ema1 = data['Close'].ewm(span = span ,adjust = False).mean()
+        ema1 = data['close'].ewm(span = span ,adjust = False).mean()
         ema2 = ema1.ewm(span = span, adjust = False).mean()
         ema3 = ema2.ewm(span = span, adjust = False).mean()
 
@@ -177,8 +177,8 @@ class Trend():
         df_ha = df.copy()
         for i in range(df_ha.shape[0]):
             if i > 0:
-                df_ha.loc[df_ha.index[i],'Open'] = (df['Open'][i-1] + df['Close'][i-1])/2
-                df_ha.loc[df_ha.index[i],'Close'] = (df['Open'][i] + df['Close'][i] + df['Low'][i] +  df['High'][i])/4
+                df_ha.loc[df_ha.index[i],'open'] = (df['open'][i-1] + df['close'][i-1])/2
+                df_ha.loc[df_ha.index[i],'close'] = (df['open'][i] + df['close'][i] + df['low'][i] +  df['high'][i])/4
 
         df_ha = df_ha.iloc[1:,:]
         return df_ha
@@ -189,10 +189,10 @@ class Bar(Calculate):
 
         bar_category_list = []
         
-        for current_index, current_value in enumerate(df['Close']):
+        for current_index, current_value in enumerate(df['close']):
             
             close_value = current_value
-            open_value = df['Open'].iloc[current_index]
+            open_value = df['open'].iloc[current_index]
             
             percentage_difference = self.calculate_percentage_difference(close_value, open_value)
             
@@ -254,7 +254,7 @@ class Indicator(Momentum, Trend, Volatility):
         # MOMENTUM
         if 'SRSI' in indicators_types_list:
             
-            K, D = self.srsi(df['Close'], period=10, smoothK=2, smoothD=2)
+            K, D = self.srsi(df['close'], period=10, smoothK=2, smoothD=2)
             df['K'], df['D'] = K, D
             
         if 'RSI' in indicators_types_list:
@@ -263,7 +263,7 @@ class Indicator(Momentum, Trend, Volatility):
             df['RSI2'] = self.rsi(df, 15).values
             
         if 'GREENBAR' in indicators_types_list:
-            df['GREENBAR'] = (df['Close'] > df['Open']).values
+            df['GREENBAR'] = (df['close'] > df['open']).values
 
         return df
     
