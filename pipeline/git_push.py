@@ -1,40 +1,28 @@
 import sys
-from subprocess import run
+import subprocess
 
 commit_message = sys.argv[1]
 
-commands_list = [
-                # Remove Folders
-                'rm -r build quantra.egg-info dist/ && ', 
-                
-                # Recreate folders
-                'python setup.py sdist bdist_wheel && ',
-                
-                # Add into commit
-                'git add . && ', 
-                
-                # Commit
-                f'git commit -m"{commit_message}" && ',
-                
-                # Push Changes
-                'git push && ',
-                
-                # Uninstall Library
-                'pip uninstall quantra -y && ',
-                
-                # Reinstall Library
-                "pip install 'git+ssh://git@github.com/ufuk-altan-ivtera/quantra.git' && "
-                
-                ]
-
-
-
-string = ""
-for command in commands_list:
+commands = [
+    # Clean old build artifacts
+    "rm -rf build quantra.egg-info dist/",
     
-    command_string = command
-    string += command_string
+    # Rebuild package
+    "python setup.py sdist bdist_wheel",
+    
+    # Git add/commit/push
+    "git add .",
+    f'git commit -m "{commit_message}"',
+    "git push",
+    
+    # Reinstall library from GitHub (SSH instead of HTTPS)
+    "pip uninstall -y quantra",
+    "pip install 'git+ssh://git@github.com/ufuk-altan-ivtera/quantra.git'"
+]
 
-string = string[:-4]
-run(string , shell=True)
-                                                                                                                        
+for cmd in commands:
+    print(f"→ Running: {cmd}")
+    result = subprocess.run(cmd, shell=True)
+    if result.returncode != 0:
+        print(f"✗ Command failed: {cmd}")
+        sys.exit(result.returncode)
