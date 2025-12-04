@@ -1,12 +1,12 @@
 import yfinance as yf
-from datetime import datetime, timedelta
 import pandas as pd
 import aiohttp
+import asyncio
 
-from datetime import date
-today_as_string = date.today()
+from quantra.utils.servant import Format
 
 VERIFY_SSL = False # !!!!
+
 
 class Client:
 
@@ -63,6 +63,10 @@ class Client:
                     raise Exception(f"Failed DELETE request: {response.status}, {response_text}")
 
 class Yahoo():
+
+    def __init__(self):
+
+        self.format_ = Format()
      
     async def financial_statements(self, ticker, freq='yearly'):
         
@@ -84,4 +88,9 @@ class Yahoo():
         
         stock = yf.Ticker(ticker)
         price_df = stock.history(start=start, end=end)
+        
+        tasks = [self.format_.format_tz_date_object(index) for index in price_df.index]
+        index = await asyncio.gather(*tasks)
+        price_df.index = index
+
         return price_df

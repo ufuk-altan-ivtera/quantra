@@ -19,7 +19,7 @@ commands = [
 
     # Reinstall library from GitHub (always SSH)
     "pip uninstall -y quantra",
-    "pip install 'git+ssh://git@github.com/ufuk-altan-ivtera/quantra.git'"
+    "pip install 'git+https://github.com/ufuk-altan-ivtera/quantra.git'"
 ]
 
 for cmd in commands:
